@@ -18,14 +18,31 @@ class Welcome extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
+
+	function testlibevent()
+	{
+		static $i;
+
+		$i++;
+
+		if ($i == 10) {
+			event_base_loopexit(-1);
+		}
+		//var_dump($buf);
+		//var_dump(event_buffer_read(array(), 10));
+	}
+
 	public function index()
 	{
 		$this->load->view('test');
 		echo 'Hello World';
+		phpinfo();
+		testlibevent();
 	}
 
 	public function printfHello()
 	{
 		echo 'Hello World';
 	}
+
 }
