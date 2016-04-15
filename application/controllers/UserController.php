@@ -16,6 +16,7 @@ class UserController extends CI_Controller
 		$this->load->model('UserModel', 'user', TRUE);
 		$this->load->helper('format');
 		$this->load->helper('url');
+		$this->load->helper('util');
 		$this->load->add_package_path(APPPATH.'third_party/taobao/');
 	}
 
@@ -26,16 +27,32 @@ class UserController extends CI_Controller
 
 	public function get_user_info()
 	{
-		$this->data = $this->user->get_user_info();
-		if (!empty($this->data))
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "数据获取成功";
+			if (has_logined())
+			{
+				$this->data = $this->user->get_user_info();
+				if (!empty($this->data))
+				{
+					$this->code = 1;
+					$this->msg = "数据获取成功";
+				}
+				else 
+				{
+					$this->code = 0;
+					$this->msg = "该用户不存在";
+				}
+			}
+			else
+			{
+					$this->code = -1;
+					$this->msg = "没有登录";
+			}
 		}
-		else 
+		else
 		{
-			$this->code = 0;
-			$this->msg = "该用户不存在";
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
 
 		echo_result($this->code, $this->msg, $this->data);
@@ -43,16 +60,24 @@ class UserController extends CI_Controller
 
 	public function get_sms_code()
 	{
-		$data = $this->user->get_sms_code();
-		if (!is_null($data))
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "验证码已发送到您的手机，请注意查收";
+			$data = $this->user->get_sms_code();
+			if (!is_null($data))
+			{
+				$this->code = 1;
+				$this->msg = "验证码已发送到您的手机，请注意查收";
+			}
+			else
+			{
+				$this->code = 0;
+				$this->msg = "验证码发送失败";
+			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "验证码发送失败";
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
 
 		echo_result($this->code, $this->msg, $data);
@@ -60,24 +85,32 @@ class UserController extends CI_Controller
 
 	public function register()
 	{
-		if (!$this->user->is_exist()) 
+		if (isvalid_sign($_GET))
 		{
-			$this->data = $this->user->register();
-			if (!empty($this->data))
+			if (!$this->user->is_exist()) 
 			{
-				$this->code = 1;
-				$this->msg = "注册成功";
+				$this->data = $this->user->register();
+				if (!empty($this->data))
+				{
+					$this->code = 1;
+					$this->msg = "注册成功";
+				}
+				else
+				{
+					$this->code = 0;
+					$this->msg = "您已注册，请直接登录";
+				}
 			}
 			else
 			{
 				$this->code = 0;
-				$this->msg = "您已注册，请直接登录";
+				$this->msg = "该账号已存在，请直接登录";
 			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "该账号已存在，请直接登录";
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
 		
 		echo_result($this->code, $this->msg, $this->data);
@@ -85,16 +118,24 @@ class UserController extends CI_Controller
 
 	public function login_by_account()
 	{
-		$this->data = $this->user->login_by_account();
-		if (!empty($this->data))
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "登录成功";
+			$this->data = $this->user->login_by_account();
+			if (!empty($this->data))
+			{
+				$this->code = 1;
+				$this->msg = "登录成功";
+			}
+			else
+			{
+				$this->code = 0;
+				$this->msg = "登录失败";
+			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "登录失败";
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
 
 		echo_result($this->code, $this->msg, $this->data);
@@ -102,34 +143,49 @@ class UserController extends CI_Controller
 
 	public function login_by_code()
 	{
-		$this->data = $this->user->login_by_code();
-		if (!empty($this->data))
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "登录成功";
+			$this->data = $this->user->login_by_code();
+			if (!empty($this->data))
+			{
+				$this->code = 1;
+				$this->msg = "登录成功";
+			}
+			else
+			{
+				$this->code = 0;
+				$this->msg = "手机号码或验证码错误";
+			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "手机号码或验证码错误";
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
 
 		echo_result($this->code, $this->msg, $this->data);
-
 	}
 
 	public function vertify_telnumber()
 	{
-		$this->data = $this->user->is_exist();
-		if (!empty($this->data))
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "该用户存在";
-		} 
+			$this->data = $this->user->is_exist();
+			if (!empty($this->data))
+			{
+				$this->code = 1;
+				$this->msg = "该用户存在";
+			} 
+			else
+			{
+				$this->code = 0;
+				$this->msg = "该用户不存在";
+			}
+		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "该用户不存在";
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
 
 	    echo_result($this->code, $this->msg, $this->data);
@@ -137,16 +193,24 @@ class UserController extends CI_Controller
 
 	public function vertify_code()
 	{
-		$this->data = $this->user->vertify_code();
-		if ($this->data)
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "验证码正确";
+			$this->data = $this->user->vertify_code();
+			if ($this->data)
+			{
+				$this->code = 1;
+				$this->msg = "验证码正确";
+			}
+			else
+			{
+				$this->code = 0;
+				$this->msg = "验证码错误";
+			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "验证码错误";
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
 
 		echo_result($this->code, $this->msg, $this->data);
@@ -154,16 +218,24 @@ class UserController extends CI_Controller
 
 	public function reset_passwd()
 	{
-		$this->data = $this->user->reset_passwd();
-		if ($this->data)
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "密码修改成功";
+			$this->data = $this->user->reset_passwd();
+			if ($this->data)
+			{
+				$this->code = 1;
+				$this->msg = "密码修改成功";
+			}
+			else
+			{
+				$this->code = 0;
+				$this->msg = "密码修改失败";
+			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "密码修改失败";
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
 
 		echo_result($this->code, $this->msg, $this->data);
@@ -188,22 +260,30 @@ class UserController extends CI_Controller
 
 	public function get_token()
 	{
-		// 用于签名的公钥和私钥
-		$accessKey = '2TlARu5yB9yh89r8Oc4zLiMr8lkDbPFsguKqE8_N';
-		$secretKey = 'NKt2L4OG-XAaUPJ7SDQHZU8fEtn6BEbCAkGpZNH4';
-		// 初始化签权对象
-		$auth = new Auth($accessKey, $secretKey);
-		$bucket = 'together-play';
-		$token = $auth->uploadToken($bucket);
-		
-		if (!empty($token)) {
-			$this->code = 1;
-			$this->msg = "token获取成功";
-		}
-		else 
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 0;
-			$this->msg = "token获取失败";
+			// 用于签名的公钥和私钥
+			$accessKey = '2TlARu5yB9yh89r8Oc4zLiMr8lkDbPFsguKqE8_N';
+			$secretKey = 'NKt2L4OG-XAaUPJ7SDQHZU8fEtn6BEbCAkGpZNH4';
+			// 初始化签权对象
+			$auth = new Auth($accessKey, $secretKey);
+			$bucket = 'together-play';
+			$token = $auth->uploadToken($bucket);
+			
+			if (!empty($token)) {
+				$this->code = 1;
+				$this->msg = "token获取成功";
+			}
+			else 
+			{
+				$this->code = 0;
+				$this->msg = "token获取失败";
+			}
+		}
+		else
+		{
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
 
 		echo_result($this->code, $this->msg, $token);
@@ -211,17 +291,25 @@ class UserController extends CI_Controller
 
 	public function modify_user_icon()
 	{
-		$this->data = $this->user->modify_user_icon();
-		if (!is_null($this->data))
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "头像上传成功";
+			$this->data = $this->user->modify_user_icon();
+			if (!is_null($this->data))
+			{
+				$this->code = 1;
+				$this->msg = "头像上传成功";
+			}
+			else
+			{
+				$this->code = 0;
+				$this->msg = "头像上传失败";
+				$this->data = '';
+			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "头像上传失败";
-			$this->data = '';
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
 
 		echo_result($this->code, $this->msg, $this->data);
@@ -229,16 +317,24 @@ class UserController extends CI_Controller
 
 	public function update_user_info()
 	{
-		$this->data = $this->user->update_user_info();
-		if ($this->data)
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "更新成功";
+			$this->data = $this->user->update_user_info();
+			if ($this->data)
+			{
+				$this->code = 1;
+				$this->msg = "更新成功";
+			}
+			else
+			{
+				$this->code = 0;
+				$this->msg = "更新失败";
+			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "更新失败";
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
 
 		echo_result($this->code, $this->msg, null);
@@ -246,21 +342,34 @@ class UserController extends CI_Controller
 
 	public function get_nearby_users()
 	{
-		$this->data = $this->user->get_nearby_users();
-
-		if (!is_null($this->data))
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "用户列表获取成功";
+			if (has_logined()) 
+			{
+				$this->data = $this->user->get_nearby_users();
+				if (!is_null($this->data))
+				{
+					$this->code = 1;
+					$this->msg = "用户列表获取成功";
+				}
+				else
+				{
+					$this->code = 0;
+					$this->msg = "您附近还没有其他好友";
+				}
+			}
+			else
+			{
+				$this->code = －1;
+				$this->msg = "没有登录";
+			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "您附近还没有其他好友";
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
 
 		echo_result($this->code, $this->msg, $this->data);
 	}
-
-
 }

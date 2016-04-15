@@ -12,6 +12,7 @@ class UserModel extends CI_Model
 		$this->load->database();
 		$this->load->helper('url');
 		$this->load->helper('distance');
+		$this->load->helper('util');
 	}
 
 	public function get_user_info()
@@ -72,6 +73,7 @@ class UserModel extends CI_Model
 				$data['nick_name'] = $result->nick_name;
 				$data['tel_number'] = $result->tel_number;
 				$data['has_passwd'] = $result->has_passwd;
+				$data['token'] = generate_token();
 				return $data;
 			}
 			else
@@ -97,10 +99,11 @@ class UserModel extends CI_Model
 			$data['tel_number'] = $result->tel_number;
 			$data['gender'] = $result->gender;
 			$data['icon'] = $result->icon;
-			$data['sign'] = $result->sign;
+			$data['signature'] = $result->signature;
 			$data['passwd'] = $result->passwd;
 			$data['has_passwd'] = $result->has_passwd;
 			$data['create_time'] = $result->create_time;
+			$data['token'] = generate_token();
 		}
 		
 		return $data;
@@ -204,7 +207,7 @@ class UserModel extends CI_Model
 	public function update_user_info()
 	{
 		$this->db->set('gender', $this->input->post('gender'));
-		$this->db->set('sign', $this->input->post('sign'));
+		$this->db->set('signature', $this->input->post('signature'));
 		$this->db->where('id', $this->input->post('id'));
 
 		return $this->db->update(USER_TABLE);
@@ -223,7 +226,7 @@ class UserModel extends CI_Model
 				$data[$key]['nick_name'] = $user->nick_name;
 				$data[$key]['gender'] = $user->gender;
 				$data[$key]['icon'] = $user->icon;
-				$data[$key]['sign'] = $user->sign;
+				$data[$key]['signature'] = $user->signature;
 				$data[$key]['distance'] = get_distance($lat, $lng, $user->latitude, $user->longitude);
 				$data[$key]['longitude'] = $user->longitude;
 				$data[$key]['latitude'] = $user->latitude;

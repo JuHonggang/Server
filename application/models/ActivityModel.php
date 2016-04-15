@@ -78,6 +78,41 @@ class ActivityModel extends CI_Model
 		return $data;
 	}
 
+	public function get_launched_activities()
+	{
+		$data = array();
+		$user_id = $this->input->get('user_id');
+		$page = $this->input->get('page');
+		$sql = 'select * from ' .TAB_NAME.' where user_id='.$user_id.';';
+		if (!empty($page))
+		{
+			$page_size = 10;
+			$sql .= 'limit '.$page * $page_size.','.$page_size;
+		}
+		$query = $this->db->query($sql);
+		if (!is_null($query) && count($query) > 0)
+		{
+			foreach ($query->result() as $key => $activity) {
+				$data[$key]['id'] = $activity->id;
+				$data[$key]['user_id'] = $activity->user_id;
+				$data[$key]['title'] = $activity->title;
+				$data[$key]['user_icon'] = $activity->user_icon;
+				$data[$key]['user_name'] = $activity->user_name;
+				$data[$key]['destination'] = $activity->destination;
+				$data[$key]['create_time'] = $activity->create_time;
+				$data[$key]['type'] = $activity->type;
+				$data[$key]['status'] = $activity->status;
+				$data[$key]['activity_time'] = $activity->activity_time;
+				$data[$key]['comment'] = $activity->comment;
+				$data[$key]['longitude'] = $activity->longitude;
+				$data[$key]['latitude'] = $activity->latitude;
+				$data[$key]['number_of_person'] = $activity->number_of_person;
+			}
+		}
+
+		return $data;
+	}
+
 	public function get_specific_type_activities()
 	{
 		$data = array();

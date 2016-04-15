@@ -17,6 +17,7 @@ class ActivityController extends CI_Controller
 		$this->load->model('SuggestionModel', 'suggestion', TRUE);
 		$this->load->library('pagination');
 		$this->load->helper('format');
+		$this->load->helper('util');
 		$this->load->helper('url');
 	}
 
@@ -51,16 +52,25 @@ class ActivityController extends CI_Controller
 
 	public function get_latest_activities()
 	{
-		$this->data = $this->activity->get_latest_activities();
-		if (!empty($this->data))
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "数据获取成功";
+			$this->data = $this->activity->get_latest_activities();
+			if (!empty($this->data))
+			{
+				$this->code = 1;
+				$this->msg = "数据获取成功";
+			}
+			else
+			{
+				$this->code = 0;
+				$this->msg = "近期没有活动哦";
+			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "近期没有活动哦";
+			$this->code = 2;
+			$this->msg = "签名错误";
+			$this->data = array();
 		}
 
 		echo_result($this->code, $this->msg, $this->data);
@@ -68,16 +78,25 @@ class ActivityController extends CI_Controller
 
 	public function get_nearby_activities()
 	{
-		$this->data = $this->activity->get_nearby_activities();
-		if (!is_null($this->data))
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "数据获取成功";
+			$this->data = $this->activity->get_nearby_activities();
+			if (!is_null($this->data))
+			{
+				$this->code = 1;
+				$this->msg = "数据获取成功";
+			}
+			else
+			{
+				$this->code = 0;
+				$this->msg = "附近没有活动哦";
+			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "附近没有活动哦";
+			$this->code = 2;
+			$this->msg = "签名错误";
+			$this->data = array();
 		}
 
 		echo_result($this->code, $this->msg, $this->data);
@@ -85,16 +104,58 @@ class ActivityController extends CI_Controller
 
 	public function get_specific_type_activities()
 	{
-		$this->data = $this->activity->get_specific_type_activities();
-		if (!empty($this->data))
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "数据获取成功";
+			$this->data = $this->activity->get_specific_type_activities();
+			if (!empty($this->data))
+			{
+				$this->code = 1;
+				$this->msg = "数据获取成功";
+			}
+			else
+			{
+				$this->code = 0;
+				$this->msg = "近期没有活动哦";
+			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "近期没有活动哦";
+			$this->code = 2;
+			$this->msg = "签名错误";
+			$this->data = array();
+		}
+
+		echo_result($this->code, $this->msg, $this->data);
+	}
+
+	public function get_launched_activities()
+	{
+		if (isvalid_sign($_GET))
+		{
+			if (has_logined())
+			{
+				$this->data = $this->activity->get_launched_activities();
+				if (!is_null($this->data))
+				{
+					$this->code = 1;
+					$this->msg = "数据获取成功";
+				}
+				else
+				{
+					$this->code = 0;
+					$this->msg = "没有发布过活动哦";
+				}
+			}
+			else
+			{
+				$this->code = -1;
+				$this->msg = "没有登录";
+			}
+		}
+		else
+		{
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
 
 		echo_result($this->code, $this->msg, $this->data);
@@ -102,16 +163,32 @@ class ActivityController extends CI_Controller
 
 	public function get_specific_activity()
 	{
-		$this->data = $this->activity->get_specific_activity();
-		if (!is_null($this->data))
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "数据获取成功";
+			if (has_logined())
+			{
+				$this->data = $this->activity->get_specific_activity();
+				if (!is_null($this->data))
+				{
+					$this->code = 1;
+					$this->msg = "数据获取成功";
+				}
+				else
+				{
+					$this->code = 0;
+					$this->msg = "该活动不存在哦";
+				}
+			}
+			else
+			{
+				$this->code = -1;
+				$this->msg = "没有登录";
+			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "该活动不存在哦";
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
 
 		echo_result($this->code, $this->msg, $this->data);
@@ -119,16 +196,32 @@ class ActivityController extends CI_Controller
 
 	public function add_activity()
 	{
-		$this->data = $this->activity->add_activity();
-		if ($this->data)
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "活动添加成功";
+			if (has_logined())
+			{
+				$this->data = $this->activity->add_activity();
+				if ($this->data)
+				{
+					$this->code = 1;
+					$this->msg = "活动添加成功";
+				}
+				else
+				{
+					$this->code = 0;
+					$this->msg = "活动添加失败";
+				}
+			}
+			else
+			{
+				$this->code = -1;
+				$this->msg = "没有登录";
+			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "活动添加失败";
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
 
 		echo_result($this->code, $this->msg, $this->data);
@@ -136,50 +229,75 @@ class ActivityController extends CI_Controller
 
 	public function del_activity()
 	{
-		$this->data = $this->activity->del_activity();
-		if ($this->data)
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "活动已删除";
+			$this->data = $this->activity->del_activity();
+			if ($this->data)
+			{
+				$this->code = 1;
+				$this->msg = "活动已删除";
+			}
+			else
+			{
+				$this->code = 0;
+				$this->msg = "活动删除失败";
+			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "活动删除失败";
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
-
+		
 		echo_result($this->code, $this->msg, $this->data);
 	}
 
 	public function update_activity()
 	{
-		$this->data = $this->activity->update_activity($id);
-		if ($this->data)
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "更新成功";
+			$this->data = $this->activity->update_activity($id);
+			if ($this->data)
+			{
+				$this->code = 1;
+				$this->msg = "更新成功";
+			}
+			else
+			{
+				$this->code = 0;
+				$this->msg = "更新失败";
+			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "更新失败";
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
-
+		
 		echo_result($this->code, $this->msg, $this->data);
 	}
 
 	public function get_all_activity_type()
 	{
-		$this->data = $this->activity_type->get_all_activity_type();
-		if (!empty($this->data))
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "数据获取成功";
+			$this->data = $this->activity_type->get_all_activity_type();
+			if (!empty($this->data))
+			{
+				$this->code = 1;
+				$this->msg = "数据获取成功";
+			}
+			else
+			{
+				$this->code = 0;
+				$this->msg = "数据获取失败";
+			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "数据获取失败";
+			$this->code = 2;
+			$this->msg = "签名错误";
+			$this->data = array();
 		}
 
 		echo_result($this->code, $this->msg, $this->data);
@@ -187,29 +305,28 @@ class ActivityController extends CI_Controller
 
 	public function submit_suggestion()
 	{
-		$this->data = $this->suggestion->submit_suggestion();
-		if ($this->data)
+		phpinfo();
+		if (isvalid_sign($_GET))
 		{
-			$this->code = 1;
-			$this->msg = "提交成功";
+			$this->data = $this->suggestion->submit_suggestion();
+			if ($this->data)
+			{
+				$this->code = 1;
+				$this->msg = "提交成功";
+			}
+			else
+			{
+				$this->code = 0;
+				$this->msg = "提交失败";
+			}
 		}
 		else
 		{
-			$this->code = 0;
-			$this->msg = "提交失败";
+			$this->code = 2;
+			$this->msg = "签名错误";
 		}
 
 		echo_result($this->code, $this->msg, $this->data);
-	}
-
-	public function test() {
-		$data = array(
-			'error' => false,
-			'errorType' => 0,
-			'errorMessage' => 'Hello',
-			'result' => $_SERVER['REQUEST_METHOD']);
-
-		echo json_encode($data);
 	}
 }
 
