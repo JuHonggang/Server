@@ -196,7 +196,10 @@ class ActivityController extends CI_Controller
 
 	public function add_activity()
 	{
-		if (isvalid_sign($_GET))
+		var_dump($_POST);
+		$body = file_get_contents('php://input');
+		var_dump($body);
+		if (isvalid_sign($_REQUEST))
 		{
 			if (has_logined())
 			{

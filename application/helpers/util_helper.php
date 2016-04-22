@@ -22,10 +22,8 @@ function generate_sign($params = array())
 		}
 
 		$all_params = join('&', $all_params);
-		echo $all_params;
-		echo '<br/>';
 		$sign = md5($private_key.$all_params);
-		echo $sign;
+		
 		return $sign;
 	}
 
@@ -34,7 +32,25 @@ function generate_sign($params = array())
 
 function isvalid_sign($params = array())
 {
-	if ($_GET['sign'] == generate_sign($params))
+	//print_r($params);
+	/*if ($_SERVER['REQUEST_METHOD'] == "GET") 
+	{
+		//echo "get";
+		if (isset($_GET['sign']) && $_GET['sign'] == generate_sign($params))
+		{
+			return true;
+		}
+	}
+	else if ($_SERVER['REQUEST_METHOD'] == "POST")
+	{
+		//echo "post";
+		if (isset($_POST['sign']) && $_POST['sign'] == generate_sign($params))
+		{
+			return true;
+		}
+	}*/
+	//phpinfo();
+	if (isset($_REQUEST['sign']) && $_REQUEST['sign'] == generate_sign($params))
 	{
 		return true;
 	}
@@ -44,7 +60,7 @@ function isvalid_sign($params = array())
 
 function has_logined()
 {
-	if (!empty($_GET['token']))
+	if (isset($_GET['token']))
 	{
 		return true;
 	}

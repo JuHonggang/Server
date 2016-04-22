@@ -2,6 +2,7 @@
 
 define ('USER_TABLE', 'user_info_table');
 define ('CODE_TABLE', 'code_table');
+define ('DEFAULT_ICON_TABLE', 'default_icon_table');
 
 class UserModel extends CI_Model 
 {
@@ -40,16 +41,31 @@ class UserModel extends CI_Model
 		return $nickname;
 	}
 
+	public function get_default_user_icon()
+	{
+		$sql = 'select * from '.DEFAULT_ICON_TABLE.' order by rand() limit 1;';
+		$query = $this->db->query($sql);
+		if (!is_null($query) && !is_null($query->row()))
+		{
+			return $query->row()->icon_url;
+		}
+
+		return "";
+	}
+
 	public function register()
 	{
+		$passwd = $this->input->get('passwd');
+		$has_passwd = empty($passwd) ? '0' : '1';
 		$data = array(
 			'tel_number' => $this->input->get('tel_number'),
-			'passwd' => $this->input->get('passwd'),
+			'passwd' => $passwd,
+			'has_passwd' => $has_passwd,
 			'nick_name' => $this->generate_nickname(),
-			'create_time' => date('Y-m-d H:i:s', time()));
+			'create_time' => date('Y-m-d H:i:s', time()),
+			'icon' => $this->get_default_user_icon());
 		$data['passwd'] = is_null($data['passwd']) ? '' : $data['passwd'];
 		$result = $this->db->insert(USER_TABLE, $data);
-		print_r($result);
 		if ($result)
 		{
 			return $data;

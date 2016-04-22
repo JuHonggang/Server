@@ -22,7 +22,7 @@ class UserController extends CI_Controller
 
 	public function index()
 	{
-		echo "Hello World";
+		//echo $this->user->get_default_user_icon();
 	}
 
 	public function get_user_info()
