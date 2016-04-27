@@ -62,7 +62,7 @@ class UserModel extends CI_Model
 			'passwd' => $passwd,
 			'has_passwd' => $has_passwd,
 			'nick_name' => $this->generate_nickname(),
-			'create_time' => date('Y-m-d H:i:s', time()),
+			'create_time' => time(),
 			'icon' => $this->get_default_user_icon());
 		$data['passwd'] = is_null($data['passwd']) ? '' : $data['passwd'];
 		$result = $this->db->insert(USER_TABLE, $data);
@@ -231,6 +231,7 @@ class UserModel extends CI_Model
 
 	public function get_nearby_users()
 	{
+		$data = array();
 		$lat = $this->input->get('lat');
 		$lng = $this->input->get('lng');
 		$sql = 'select * from '.USER_TABLE.' where longitude between '.($lng-0.1).' and '.($lng+0.1).' and latitude between '.($lat-0.1).' and '.($lat+0.1).';';

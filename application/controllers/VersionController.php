@@ -20,6 +20,10 @@ class VersionController extends CI_Controller
 		echo "Hello World";
 	}
 
+	/**
+	 * 版本更新
+	 * @return [type]
+	 */
 	public function update_version()
 	{
 		if (isvalid_sign($_GET))

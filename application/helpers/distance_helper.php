@@ -7,6 +7,14 @@ function rad($degress)
     return $degress * M_PI / 180.0;
 }
 
+/**
+ * 根据两点的经纬度获取两点的距离
+ * @param  [type]
+ * @param  [type]
+ * @param  [type]
+ * @param  [type]
+ * @return [type]
+ */
 function get_distance($lat1, $lng1, $lat2, $lng2)
 {
 	$rad_lat1 = rad($lat1);

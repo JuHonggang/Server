@@ -1,4 +1,11 @@
 <?php
+/**
+ * 将应答包以Json的形式返回给客户端
+ * @param  [type]   
+ * @param  [type]
+ * @param  array
+ * @return [type]
+ */
 function echo_result($code, $msg, $data = array())
 {
 	$result = array(
@@ -8,5 +15,4 @@ function echo_result($code, $msg, $data = array())
 	);
 
 	echo json_encode($result);
-	//$this->output->set_content_type('application/json')->set_output(json_encode(result));
 }

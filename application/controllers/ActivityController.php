@@ -50,6 +50,10 @@ class ActivityController extends CI_Controller
 	    $this->load->view('templates/footer', $data);
 	}
 
+	/**
+	 * 获取最新的活动信息
+	 * @return [type]
+	 */
 	public function get_latest_activities()
 	{
 		if (isvalid_sign($_GET))
@@ -76,6 +80,10 @@ class ActivityController extends CI_Controller
 		echo_result($this->code, $this->msg, $this->data);
 	}
 
+	/**
+	 * 获取附近的活动信息
+	 * @return [type]
+	 */
 	public function get_nearby_activities()
 	{
 		if (isvalid_sign($_GET))
@@ -102,6 +110,10 @@ class ActivityController extends CI_Controller
 		echo_result($this->code, $this->msg, $this->data);
 	}
 
+	/**
+	 * 获取指定类型的所有活动
+	 * @return [type]
+	 */
 	public function get_specific_type_activities()
 	{
 		if (isvalid_sign($_GET))
@@ -128,6 +140,10 @@ class ActivityController extends CI_Controller
 		echo_result($this->code, $this->msg, $this->data);
 	}
 
+	/**
+	 * 获取以已布的活动
+	 * @return [type]
+	 */
 	public function get_launched_activities()
 	{
 		if (isvalid_sign($_GET))
@@ -161,6 +177,10 @@ class ActivityController extends CI_Controller
 		echo_result($this->code, $this->msg, $this->data);
 	}
 
+	/**
+	 * 获取指定活动的详细信息
+	 * @return [type]
+	 */
 	public function get_specific_activity()
 	{
 		if (isvalid_sign($_GET))
@@ -194,11 +214,11 @@ class ActivityController extends CI_Controller
 		echo_result($this->code, $this->msg, $this->data);
 	}
 
+	/**
+	 *  发布活动
+	 */
 	public function add_activity()
 	{
-		var_dump($_POST);
-		$body = file_get_contents('php://input');
-		var_dump($body);
 		if (isvalid_sign($_REQUEST))
 		{
 			if (has_logined())
@@ -230,6 +250,10 @@ class ActivityController extends CI_Controller
 		echo_result($this->code, $this->msg, $this->data);
 	}
 
+	/**
+	 * 删除活动
+	 * @return [type]
+	 */
 	public function del_activity()
 	{
 		if (isvalid_sign($_GET))
@@ -252,23 +276,36 @@ class ActivityController extends CI_Controller
 			$this->msg = "签名错误";
 		}
 		
-		echo_result($this->code, $this->msg, $this->data);
+		echo_result($this->code, $this->msg, '');
 	}
 
+	/**
+	 * 更新活动信息
+	 * @return [type]
+	 */
 	public function update_activity()
 	{
-		if (isvalid_sign($_GET))
+		//phpinfo();
+		if (isvalid_sign($_REQUEST))
 		{
-			$this->data = $this->activity->update_activity($id);
-			if ($this->data)
+			if (has_logined())
 			{
-				$this->code = 1;
-				$this->msg = "更新成功";
-			}
-			else
+				$this->data = $this->activity->update_activity();
+				if ($this->data)
+				{
+					$this->code = 1;
+					$this->msg = "更新成功";
+				}
+				else
+				{
+					$this->code = 0;
+					$this->msg = "更新失败";
+				}
+			} 
+			else 
 			{
-				$this->code = 0;
-				$this->msg = "更新失败";
+				$this->code = -1;
+				$this->msg = "没有登录";
 			}
 		}
 		else
@@ -280,6 +317,10 @@ class ActivityController extends CI_Controller
 		echo_result($this->code, $this->msg, $this->data);
 	}
 
+	/**
+	 * 获取所有的活动类型
+	 * @return [type]
+	 */
 	public function get_all_activity_type()
 	{
 		if (isvalid_sign($_GET))
@@ -306,10 +347,13 @@ class ActivityController extends CI_Controller
 		echo_result($this->code, $this->msg, $this->data);
 	}
 
+	/**
+	 * 提交建议
+	 * @return [type]
+	 */
 	public function submit_suggestion()
 	{
-		phpinfo();
-		if (isvalid_sign($_GET))
+		if (isvalid_sign($_REQUEST))
 		{
 			$this->data = $this->suggestion->submit_suggestion();
 			if ($this->data)

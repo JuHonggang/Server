@@ -36,10 +36,10 @@ class ActivityModel extends CI_Model
 				$data[$key]['distance'] = $activity->distance;
 				$data[$key]['create_time'] = $activity->create_time;
 				$data[$key]['type'] = $activity->type;
-				$data[$key]['status'] = $activity->status;
 				$data[$key]['activity_time'] = $activity->activity_time;
 				$data[$key]['comment'] = $activity->comment;
-				$data[$key]['number_of_person'] = $activity->number_of_person;
+				$data[$key]['longitude'] = $activity->longitude;
+				$data[$key]['latitude'] = $activity->latitude;
 			}
 		} 
 		
@@ -63,15 +63,13 @@ class ActivityModel extends CI_Model
 				$data[$key]['user_icon'] = $activity->user_icon;
 				$data[$key]['user_name'] = $activity->user_name;
 				$data[$key]['destination'] = $activity->destination;
-				$data[$key]['distance'] = get_distance($lat, $lng, $activity->latitude, $activity->longitude);
+				$data[$key]['distance'] = $activity->distance;
 				$data[$key]['create_time'] = $activity->create_time;
 				$data[$key]['type'] = $activity->type;
-				$data[$key]['status'] = $activity->status;
 				$data[$key]['activity_time'] = $activity->activity_time;
 				$data[$key]['comment'] = $activity->comment;
 				$data[$key]['longitude'] = $activity->longitude;
 				$data[$key]['latitude'] = $activity->latitude;
-				$data[$key]['number_of_person'] = $activity->number_of_person;
 			}
 		}
 
@@ -83,12 +81,13 @@ class ActivityModel extends CI_Model
 		$data = array();
 		$user_id = $this->input->get('user_id');
 		$page = $this->input->get('page');
-		$sql = 'select * from ' .TAB_NAME.' where user_id='.$user_id.';';
+		$sql = 'select * from ' .TAB_NAME.' where user_id='.$user_id.'';
 		if (!empty($page))
 		{
 			$page_size = 10;
-			$sql .= 'limit '.$page * $page_size.','.$page_size;
+			$sql .= ' limit '.($page-1) * $page_size.','.$page_size;
 		}
+	
 		$query = $this->db->query($sql);
 		if (!is_null($query) && count($query) > 0)
 		{
@@ -99,14 +98,13 @@ class ActivityModel extends CI_Model
 				$data[$key]['user_icon'] = $activity->user_icon;
 				$data[$key]['user_name'] = $activity->user_name;
 				$data[$key]['destination'] = $activity->destination;
+				$data[$key]['distance'] = $activity->distance;
 				$data[$key]['create_time'] = $activity->create_time;
 				$data[$key]['type'] = $activity->type;
-				$data[$key]['status'] = $activity->status;
 				$data[$key]['activity_time'] = $activity->activity_time;
 				$data[$key]['comment'] = $activity->comment;
 				$data[$key]['longitude'] = $activity->longitude;
 				$data[$key]['latitude'] = $activity->latitude;
-				$data[$key]['number_of_person'] = $activity->number_of_person;
 			}
 		}
 
@@ -122,19 +120,19 @@ class ActivityModel extends CI_Model
 		{
 			foreach ($query->result() as $key => $activity) 
 			{
-				$data[$key]['id'] = $activity->id;
-				$data[$key]['user_id'] = $activity->user_id;
-				$data[$key]['title'] = $activity->title;
-				$data[$key]['user_icon'] = $activity->user_icon;
-				$data[$key]['user_name'] = $activity->user_name;
-				$data[$key]['destination'] = $activity->destination;
-				$data[$key]['distance'] = $activity->distance;
-				$data[$key]['create_time'] = $activity->create_time;
-				$data[$key]['type'] = $activity->type;
-				$data[$key]['status'] = $activity->status;
-				$data[$key]['activity_time'] = $activity->activity_time;
-				$data[$key]['comment'] = $activity->comment;
-				$data[$key]['number_of_person'] = $activity->number_of_person;
+				$data[$key]['id'] 				= $activity->id;
+				$data[$key]['user_id'] 			= $activity->user_id;
+				$data[$key]['title'] 			= $activity->title;
+				$data[$key]['user_icon'] 		= $activity->user_icon;
+				$data[$key]['user_name'] 		= $activity->user_name;
+				$data[$key]['destination'] 		= $activity->destination;
+				$data[$key]['distance'] 		= $activity->distance;
+				$data[$key]['create_time'] 		= $activity->create_time;
+				$data[$key]['type'] 			= $activity->type;
+				$data[$key]['activity_time'] 	= $activity->activity_time;
+				$data[$key]['comment'] 			= $activity->comment;
+				$data[$key]['longitude'] 		= $activity->longitude;
+				$data[$key]['latitude'] 		= $activity->latitude;
 			}
 		}
 		
@@ -150,19 +148,19 @@ class ActivityModel extends CI_Model
 			$query = $this->db->get_where(TAB_NAME, array('id' => $id));
 			if (!is_null($query) && $result = $query->row())
 			{
-				$data['id'] = $result->id;
-				$data['user_id'] = $result->user_id;
-				$data['title'] = $result->title;
-				$data['user_icon'] = $result->user_icon;
-				$data['user_name'] = $result->user_name;
-				$data['destination'] = $result->destination;
-				$data['distance'] = $result->distance;
-				$data['create_time'] = $result->create_time;
-				$data['type'] = $result->type;
-				$data['status'] = $result->status;
-				$data['activity_time'] = $result->activity_time;
-				$data['comment'] = $result->comment;
-				$data['number_of_person'] = $result->number_of_person;
+				$data['id'] 			= $result->id;
+				$data['user_id'] 		= $result->user_id;
+				$data['title'] 			= $result->title;
+				$data['user_icon'] 		= $result->user_icon;
+				$data['user_name'] 		= $result->user_name;
+				$data['destination'] 	= $result->destination;
+				$data['distance'] 		= $result->distance;
+				$data['create_time'] 	= $result->create_time;
+				$data['type'] 			= $result->type;
+				$data['activity_time'] 	= $result->activity_time;
+				$data['comment'] 		= $result->comment;
+				$data['longitude'] 		= $result->longitude;
+				$data['latitude'] 		= $result->latitude;
 			} 
 		}
 
@@ -171,25 +169,25 @@ class ActivityModel extends CI_Model
 
 	public function add_activity()
 	{
-		//phpinfo();
 		$data =  array(
 			'title' 			=> $this->input->post('title'),
 			'user_id' 			=> $this->input->post('user_id'),
 			'user_name' 		=> $this->input->post('user_name'),
 			'user_icon'			=> $this->input->post('user_icon'),
+			'title'				=> $this->input->post('title'),
 			'destination' 		=> $this->input->post('destination'),
-			'distance' 			=> $this->input->post('distance'),
-			'create_time' 		=> date('Y-m-d H:i', time()),
+			'create_time' 		=> time(),
 			'type' 				=> $this->input->post('type'),
-			'status' 			=> $this->input->post('status'),
-			'activity_time'		=> $this->input->post('time'),
-			'comment' 	=> $this->input->post('comment')
-			);
+			'activity_time'		=> $this->input->post('activity_time'),
+			'comment' 			=> $this->input->post('comment'),
+			'longitude'			=> $this->input->post('longitude'),
+			'latitude'			=> $this->input->post('latitude')
+		);
 		
 		return $this->db->insert(TAB_NAME, $data);
 	}
 
-	public function del_activity($id)
+	public function del_activity()
 	{	
 		$id = $this->input->get('id');
 		return $this->db->delete(TAB_NAME, array('id' => $id));
@@ -199,16 +197,15 @@ class ActivityModel extends CI_Model
 	{
 		$data =  array(
 			'title' 			=> $this->input->post('title'),
-			'user_id' 			=> $this->input->post('user_id'),
-			'user_name' 		=> $this->input->post('user_name'),
 			'destination' 		=> $this->input->post('destination'),
-			'distance' 			=> $this->input->post('distance'),
-			'create_time' 		=> date('H-m-D H:i', time()),
 			'type' 				=> $this->input->post('type'),
-			'status' 			=> $this->input->post('status'),
-			'number_of_person' 	=> $this->input->post('number_of_person'),
-			);
+			'activity_time'		=> $this->input->post('activity_time'),
+			'comment' 			=> $this->input->post('comment'),
+			'longitude'			=> $this->input->post('longitude'),
+			'latitude'			=> $this->input->post('latitude')
+		);
 
-		return $this->db->replace(TAB_NAME, $data);
+		$this->db->where('id', $this->input->post('id'));
+		return $this->db->update(TAB_NAME, $data);
 	}
 } 

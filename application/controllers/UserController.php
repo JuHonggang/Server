@@ -25,6 +25,10 @@ class UserController extends CI_Controller
 		//echo $this->user->get_default_user_icon();
 	}
 
+	/**
+	 * 获取制定用户的信息
+	 * @return [type]
+	 */
 	public function get_user_info()
 	{
 		if (isvalid_sign($_GET))
@@ -58,6 +62,10 @@ class UserController extends CI_Controller
 		echo_result($this->code, $this->msg, $this->data);
 	}
 
+	/**
+	 * 获取短信验证码
+	 * @return [type]
+	 */
 	public function get_sms_code()
 	{
 		if (isvalid_sign($_GET))
@@ -83,6 +91,10 @@ class UserController extends CI_Controller
 		echo_result($this->code, $this->msg, $data);
 	}
 
+	/**
+	 * 注册
+	 * @return [type]
+	 */
 	public function register()
 	{
 		if (isvalid_sign($_GET))
@@ -116,6 +128,10 @@ class UserController extends CI_Controller
 		echo_result($this->code, $this->msg, $this->data);
 	}
 
+	/**
+	 * 通过账号密码的方式进行登录
+	 * @return [type]
+	 */
 	public function login_by_account()
 	{
 		if (isvalid_sign($_GET))
@@ -130,6 +146,7 @@ class UserController extends CI_Controller
 			{
 				$this->code = 0;
 				$this->msg = "登录失败";
+				$this->data = null;
 			}
 		}
 		else
@@ -141,6 +158,10 @@ class UserController extends CI_Controller
 		echo_result($this->code, $this->msg, $this->data);
 	}
 
+	/**
+	 * 通过获取手机验证码的方式进行登录
+	 * @return [type]
+	 */
 	public function login_by_code()
 	{
 		if (isvalid_sign($_GET))
@@ -166,6 +187,10 @@ class UserController extends CI_Controller
 		echo_result($this->code, $this->msg, $this->data);
 	}
 
+	/**
+	 * 初次设置密码或修改密码的时候确认手机号码
+	 * @return [type]
+	 */
 	public function vertify_telnumber()
 	{
 		if (isvalid_sign($_GET))
@@ -191,6 +216,10 @@ class UserController extends CI_Controller
 	    echo_result($this->code, $this->msg, $this->data);
 	}
 
+	/**
+	 * 验证验证码的正确性
+	 * @return [type]
+	 */
 	public function vertify_code()
 	{
 		if (isvalid_sign($_GET))
@@ -216,6 +245,10 @@ class UserController extends CI_Controller
 		echo_result($this->code, $this->msg, $this->data);
 	}
 
+	/**
+	 * 重置密码
+	 * @return [type]
+	 */
 	public function reset_passwd()
 	{
 		if (isvalid_sign($_GET))
@@ -241,7 +274,10 @@ class UserController extends CI_Controller
 		echo_result($this->code, $this->msg, $this->data);
 	}
 
-
+	/**
+	 * 获取附近用户的信息
+	 * @return [type]
+	 */
 	public function get_nearby_contact()
 	{
 		$lon = $this->input->get('lon');
@@ -258,6 +294,10 @@ class UserController extends CI_Controller
 		echo $output;
 	}
 
+	/**
+	 * 获取七牛存储的token
+	 * @return [type]
+	 */
 	public function get_token()
 	{
 		if (isvalid_sign($_GET))
@@ -289,6 +329,10 @@ class UserController extends CI_Controller
 		echo_result($this->code, $this->msg, $token);
 	}	
 
+	/**
+	 * 修改用户头像
+	 * @return [type]
+	 */
 	public function modify_user_icon()
 	{
 		if (isvalid_sign($_GET))
@@ -315,9 +359,13 @@ class UserController extends CI_Controller
 		echo_result($this->code, $this->msg, $this->data);
 	}
 
+	/**
+	 * 更新用户信息
+	 * @return [type]
+	 */
 	public function update_user_info()
 	{
-		if (isvalid_sign($_GET))
+		if (isvalid_sign($_REQUEST))
 		{
 			$this->data = $this->user->update_user_info();
 			if ($this->data)
@@ -340,6 +388,10 @@ class UserController extends CI_Controller
 		echo_result($this->code, $this->msg, null);
 	}
 
+	/**
+	 * 获取附近的人
+	 * @return [type]
+	 */
 	public function get_nearby_users()
 	{
 		if (isvalid_sign($_GET))
@@ -347,7 +399,7 @@ class UserController extends CI_Controller
 			if (has_logined()) 
 			{
 				$this->data = $this->user->get_nearby_users();
-				if (!is_null($this->data))
+				if (!empty($this->data))
 				{
 					$this->code = 1;
 					$this->msg = "用户列表获取成功";
