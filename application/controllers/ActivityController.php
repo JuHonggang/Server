@@ -24,6 +24,7 @@ class ActivityController extends CI_Controller
 	public function index()
 	{
 		//$this->load->view('test');
+		//echo "This is test!!!";
 		return $this->get_latest_activities();
 		/*if (!function_exists('getspecificactivity')) 
 		{
