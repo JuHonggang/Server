@@ -48,10 +48,18 @@ class ActivityModel extends CI_Model
 
 	public function get_nearby_activities()
 	{
+		$data = array();
 		// 用户当前的位置
 		$lat = $this->input->get('lat');
 		$lng = $this->input->get('lng');
-		$sql = "select * from ".TAB_NAME." where longitude between ".($lng-0.1)." and ".($lng+0.1)." and latitude between ".($lat-0.1)." and ".($lat+0.1).";";
+		$page = $this->input->get('page');
+		$sql = "select * from ".TAB_NAME." where longitude between ".($lng-0.1)." and ".($lng+0.1)." and latitude between ".($lat-0.1)." and ".($lat+0.1);
+		if (!empty($page))
+		{
+			$page_size = 10;
+			$sql .= " limit ".($page-1) * $page_size.', '.$page_size;
+		}
+		
 		$query = $this->db->query($sql);
 		if (!is_null($query) && count($query->result()) > 0)
 		{
@@ -63,7 +71,7 @@ class ActivityModel extends CI_Model
 				$data[$key]['user_icon'] = $activity->user_icon;
 				$data[$key]['user_name'] = $activity->user_name;
 				$data[$key]['destination'] = $activity->destination;
-				$data[$key]['distance'] = $activity->distance;
+				$data[$key]['distance'] = get_distance($lat, $lng, $activity->latitude, $activity->longitude);
 				$data[$key]['create_time'] = $activity->create_time;
 				$data[$key]['type'] = $activity->type;
 				$data[$key]['activity_time'] = $activity->activity_time;

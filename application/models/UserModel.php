@@ -234,7 +234,13 @@ class UserModel extends CI_Model
 		$data = array();
 		$lat = $this->input->get('lat');
 		$lng = $this->input->get('lng');
-		$sql = 'select * from '.USER_TABLE.' where longitude between '.($lng-0.1).' and '.($lng+0.1).' and latitude between '.($lat-0.1).' and '.($lat+0.1).';';
+		$page = $this->input->get('page');
+		$sql = 'select * from '.USER_TABLE.' where longitude between '.($lng-0.1).' and '.($lng+0.1).' and latitude between '.($lat-0.1).' and '.($lat+0.1);
+		if (!empty($page))
+		{
+			$page_size = 10;
+			$sql .= " limit ".($page-1) * $page_size.", ".$page_size;
+		}
 		$query = $this->db->query($sql);
 		if (!is_null($query) && count($query->result()) > 0)
 		{
