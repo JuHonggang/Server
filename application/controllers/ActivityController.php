@@ -21,26 +21,10 @@ class ActivityController extends CI_Controller
 		$this->load->helper('url');
 	}
 
-	public function index()
-	{
-		//$this->load->view('test');
-		//echo "This is test!!!";
-		return $this->get_latest_activities();
-		/*if (!function_exists('getspecificactivity')) 
-		{
-			echo "The function is not exist!";
-		} else 
-		{*/
-			//$this->getLatestActivity();
-		//}
-		//var_dump($array);
-	}
-
 	public function view($page = 'home')
 	{
 	    if (!file_exists(APPPATH.'/views/pages/'.$page.'.php'))
 	    {
-	        // Whoops, we don't have a page for that!
 	        show_404();
 	    }
 
